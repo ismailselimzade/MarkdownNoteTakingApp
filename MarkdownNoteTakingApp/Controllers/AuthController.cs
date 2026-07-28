@@ -1,5 +1,5 @@
 ﻿using MarkdownNoteTakingApp.Data;
-using MarkdownNoteTakingApp.DTOs;
+using MarkdownNoteTakingApp.DTOs.user;
 using MarkdownNoteTakingApp.Models;
 using MarkdownNoteTakingApp.Services;
 using Microsoft.AspNetCore.Authorization;

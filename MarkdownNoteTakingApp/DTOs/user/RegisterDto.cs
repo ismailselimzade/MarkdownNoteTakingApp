@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MarkdownNoteTakingApp.DTOs
+namespace MarkdownNoteTakingApp.DTOs.user
 {
     public class RegisterDto
     {

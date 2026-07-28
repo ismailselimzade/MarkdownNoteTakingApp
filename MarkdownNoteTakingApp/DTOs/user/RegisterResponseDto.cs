@@ -1,4 +1,4 @@
-﻿namespace MarkdownNoteTakingApp.DTOs
+﻿namespace MarkdownNoteTakingApp.DTOs.user
 {
     public class RegisterResponseDto
     {
