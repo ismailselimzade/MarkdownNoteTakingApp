@@ -23,6 +23,10 @@ namespace MarkdownNoteTakingApp.Data
                 .HasOne(a => a.Note)
                 .WithMany(n => n.Attachments)
                 .HasForeignKey(a => a.NoteId);
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
         }
     }
 }
