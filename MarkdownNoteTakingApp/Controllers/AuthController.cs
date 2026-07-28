@@ -92,6 +92,21 @@ namespace MarkdownNoteTakingApp.Controllers
             return Ok(new {token = jwtToken});
         }
 
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetProfile()
+        {
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var user = await _db.Users
+                .Where(u => u.Id == userId)
+                .Select(u => new GetProfileResponseDto
+                {
+                    Id = u.Id, Username = u.Username, CreatedAt = u.CreatedAt
+                })
+                .FirstOrDefaultAsync();
+
+            return user == null ? NotFound() : Ok(user);
+        }
+
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteUser(DeleteUserDto deleteUserDto)
         {
