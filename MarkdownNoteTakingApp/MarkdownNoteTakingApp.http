@@ -1,6 +1,97 @@
-@MarkdownNoteTakingApp_HostAddress = http://localhost:5052
+@MarkdownNoteTakingApp_HostAddress = https://localhost:7171
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwibmJmIjoxNzg1MjIzMzQxLCJleHAiOjE3ODUyMjY5NDEsImlhdCI6MTc4NTIyMzM0MSwiaXNzIjoiTWFya2Rvd25Ob3RlVGFraW5nQXBwIiwiYXVkIjoiTWFya2Rvd25Ob3RlVGFraW5nQXBwIn0.i9XI6ACRbtEYNXH-KJbOfYXVxtQ7H0_m_pebolwZLWE
 
-GET {{MarkdownNoteTakingApp_HostAddress}}
-Accept: application/json
+### Register
+POST {{MarkdownNoteTakingApp_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "Username": "testuser",
+  "Password": "Test1234!"
+}
+
+### Register - duplicate username (expect 409 Conflict)
+POST {{MarkdownNoteTakingApp_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "Username": "testuser",
+  "Password": "Test1234!"
+}
+
+### Login
+POST {{MarkdownNoteTakingApp_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "Username": "testuser",
+  "Password": "Test1234!"
+}
+
+### Login - wrong password (expect 401 Unauthorized)
+POST {{MarkdownNoteTakingApp_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "Username": "testuser",
+  "Password": "WrongPassword!"
+}
+
+### Login - nonexistent user (expect 401 Unauthorized)
+POST {{MarkdownNoteTakingApp_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "Username": "nouser",
+  "Password": "Test1234!"
+}
+
+### Get profile - copy a valid token into @token first
+GET {{MarkdownNoteTakingApp_HostAddress}}/api/auth/profile
+Authorization: Bearer {{token}}
+
+### Get profile - no/invalid token (expect 401 Unauthorized)
+GET {{MarkdownNoteTakingApp_HostAddress}}/api/auth/profile
+Authorization: Bearer invalidtoken
+
+### Update user - copy the token from a Login response above into @token at the top
+PUT {{MarkdownNoteTakingApp_HostAddress}}/api/auth/update
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "Username": "testuser2",
+  "OldPassword": "Test1234!",
+  "NewPassword": "NewTest1234!"
+}
+
+### Update user - wrong old password (expect 401 Unauthorized)
+PUT {{MarkdownNoteTakingApp_HostAddress}}/api/auth/update
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "Username": "testuser2",
+  "OldPassword": "WrongPassword!",
+  "NewPassword": "NewTest1234!"
+}
+
+### Delete user - copy a valid token into @token first
+DELETE {{MarkdownNoteTakingApp_HostAddress}}/api/auth/delete
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "Password": "NewTest1234!"
+}
+
+### Delete user - wrong password (expect 401 Unauthorized)
+DELETE {{MarkdownNoteTakingApp_HostAddress}}/api/auth/delete
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "Password": "WrongPassword!"
+}
 
 ###
