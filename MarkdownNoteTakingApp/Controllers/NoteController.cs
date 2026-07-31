@@ -4,10 +4,7 @@ using MarkdownNoteTakingApp.DTOs.note;
 using MarkdownNoteTakingApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Net.Mime;
-using System.Security.Claims;
 using System.Text.Json;
 
 namespace MarkdownNoteTakingApp.Controllers
@@ -170,6 +167,8 @@ namespace MarkdownNoteTakingApp.Controllers
             {
                 PropertyNameCaseInsensitive = true
             });
+
+            if (result == null) return NotFound();
 
             var response = result.Matches.Select(m => new GrammarCheckResultDto
             {

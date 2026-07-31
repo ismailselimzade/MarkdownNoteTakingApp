@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
+
 namespace MarkdownNoteTakingApp.Controllers
 {
     public abstract class BaseController : ControllerBase
