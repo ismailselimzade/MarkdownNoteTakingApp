@@ -15,7 +15,7 @@ namespace MarkdownNoteTakingApp.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class AuthController : Controller
+    public class AuthController : BaseController
     {
         private readonly AppDbContext _db;
         private readonly IConfiguration _configuration;
@@ -95,9 +95,8 @@ namespace MarkdownNoteTakingApp.Controllers
         [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
         {
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             var user = await _db.Users
-                .Where(u => u.Id == userId)
+                .Where(u => u.Id == UserId)
                 .Select(u => new GetProfileResponseDto
                 {
                     Id = u.Id, Username = u.Username, CreatedAt = u.CreatedAt
@@ -110,9 +109,7 @@ namespace MarkdownNoteTakingApp.Controllers
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteUser(DeleteUserDto deleteUserDto)
         {
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-
-            var user = await _db.Users.FindAsync(userId);
+            var user = await _db.Users.FindAsync(UserId);
 
             if (user == null || !_passwordService.VerifyPassword(deleteUserDto.Password, user.PasswordHash))
                 return Unauthorized();
@@ -126,9 +123,7 @@ namespace MarkdownNoteTakingApp.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> UpdateUser(UpdateUserDto updateUserDto)
         {
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-
-            var user = await _db.Users.FindAsync(userId);
+            var user = await _db.Users.FindAsync(UserId);
 
             if (user == null || !_passwordService.VerifyPassword(updateUserDto. OldPassword, user.PasswordHash))
                 return Unauthorized();
