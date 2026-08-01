@@ -12,12 +12,12 @@ namespace MarkdownNoteTakingApp.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class NoteController : BaseController
+    public class NotesController : BaseController
     {
         private readonly AppDbContext _db;
         private readonly IHttpClientFactory _http;
 
-        public NoteController(AppDbContext appDbContext, IHttpClientFactory httpClient)
+        public NotesController(AppDbContext appDbContext, IHttpClientFactory httpClient)
         {
             _db = appDbContext;
             _http = httpClient;
@@ -88,7 +88,7 @@ namespace MarkdownNoteTakingApp.Controllers
                 CreatedAt = note.CreatedAt
             };
 
-            return CreatedAtAction(nameof(GetNote), new { id = note.Id }, response);
+            return CreatedAtAction(nameof(GetNote), new { noteId = note.Id }, response);
         }
 
         

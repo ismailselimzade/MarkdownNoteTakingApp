@@ -10,12 +10,12 @@ namespace MarkdownNoteTakingApp.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class AttachmentController : BaseController
+    public class AttachmentsController : BaseController
     {
         private readonly AppDbContext _db;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AttachmentController(AppDbContext appDbContext, IWebHostEnvironment webHostEnvironment)
+        public AttachmentsController(AppDbContext appDbContext, IWebHostEnvironment webHostEnvironment)
         {
             _db = appDbContext;
             _webHostEnvironment = webHostEnvironment;
@@ -56,10 +56,10 @@ namespace MarkdownNoteTakingApp.Controllers
                 CreatedAt = attachment.CreatedAt
             };
 
-            return CreatedAtAction(nameof(DownloadAttachment), new { id = attachment.Id }, response);
+            return CreatedAtAction(nameof(DownloadAttachment), new { attachmentId = attachment.Id }, response);
         }
 
-        [HttpGet]
+        [HttpGet("note/{noteId}")]
         public async Task<IActionResult> GetAttachments(int noteId)
         {
             var note = await _db.Notes
@@ -80,12 +80,12 @@ namespace MarkdownNoteTakingApp.Controllers
             return Ok(attachments);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> DownloadAttachment(int id)
+        [HttpGet("{attachmentId}")]
+        public async Task<IActionResult> DownloadAttachment(int attachmentId)
         {
             var attachment = await _db.Attachments
                 .Include(a => a.Note)
-                .FirstOrDefaultAsync(a => a.Id == id && a.Note.UserId == UserId);
+                .FirstOrDefaultAsync(a => a.Id == attachmentId && a.Note.UserId == UserId);
             if (attachment == null) return NotFound();
 
             var uploadsFolderPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads");
@@ -98,12 +98,12 @@ namespace MarkdownNoteTakingApp.Controllers
             return File(stream, attachment.ContentType, attachment.Title);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAttachment(int id)
+        [HttpDelete("{attachmentId}")]
+        public async Task<IActionResult> DeleteAttachment(int attachmentId)
         {
             var attachment = await _db.Attachments
                 .Include(a => a.Note)
-                .FirstOrDefaultAsync(a => a.Id == id && a.Note.UserId == UserId);
+                .FirstOrDefaultAsync(a => a.Id == attachmentId && a.Note.UserId == UserId);
             if (attachment == null) return NotFound();
 
             _db.Attachments.Remove(attachment);
