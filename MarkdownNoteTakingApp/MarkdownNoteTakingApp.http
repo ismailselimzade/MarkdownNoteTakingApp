@@ -1,5 +1,9 @@
 @MarkdownNoteTakingApp_HostAddress = https://localhost:7171
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwibmJmIjoxNzg1MjIzMzQxLCJleHAiOjE3ODUyMjY5NDEsImlhdCI6MTc4NTIyMzM0MSwiaXNzIjoiTWFya2Rvd25Ob3RlVGFraW5nQXBwIiwiYXVkIjoiTWFya2Rvd25Ob3RlVGFraW5nQXBwIn0.i9XI6ACRbtEYNXH-KJbOfYXVxtQ7H0_m_pebolwZLWE
+@token = PASTE_YOUR_JWT_HERE
+@noteId = 1
+@attachmentId = 1
+
+### ==================== AUTH ====================
 
 ### Register
 POST {{MarkdownNoteTakingApp_HostAddress}}/api/auth/register
@@ -93,5 +97,102 @@ Authorization: Bearer {{token}}
 {
   "Password": "WrongPassword!"
 }
+
+### ==================== NOTES ====================
+
+### Get all notes
+GET {{MarkdownNoteTakingApp_HostAddress}}/api/notes
+Authorization: Bearer {{token}}
+
+### Get single note
+GET {{MarkdownNoteTakingApp_HostAddress}}/api/notes/{{noteId}}
+Authorization: Bearer {{token}}
+
+### Get single note - not found (expect 404)
+GET {{MarkdownNoteTakingApp_HostAddress}}/api/notes/99999
+Authorization: Bearer {{token}}
+
+### Add note
+POST {{MarkdownNoteTakingApp_HostAddress}}/api/notes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "Title": "My first note",
+  "Content": "# Hello\n\nThis is **markdown** content."
+}
+
+### Update note (partial - title only)
+PUT {{MarkdownNoteTakingApp_HostAddress}}/api/notes/{{noteId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "Title": "Updated title"
+}
+
+### Update note (partial - content only)
+PUT {{MarkdownNoteTakingApp_HostAddress}}/api/notes/{{noteId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "Content": "Updated content only."
+}
+
+### Update note - not found (expect 404)
+PUT {{MarkdownNoteTakingApp_HostAddress}}/api/notes/99999
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "Title": "Does not matter"
+}
+
+### Delete note (expect 204 No Content)
+DELETE {{MarkdownNoteTakingApp_HostAddress}}/api/notes/{{noteId}}
+Authorization: Bearer {{token}}
+
+### Delete note - not found (expect 404)
+DELETE {{MarkdownNoteTakingApp_HostAddress}}/api/notes/99999
+Authorization: Bearer {{token}}
+
+### Get note - rendered as HTML
+GET {{MarkdownNoteTakingApp_HostAddress}}/api/notes/render/{{noteId}}
+Authorization: Bearer {{token}}
+
+### Get note - grammar check
+GET {{MarkdownNoteTakingApp_HostAddress}}/api/notes/grammar-check/{{noteId}}
+Authorization: Bearer {{token}}
+
+### ==================== ATTACHMENTS ====================
+### NOTE: AddAttachment (file upload) is not covered here - multipart/form-data
+### bodies are unreliable in the REST Client extension. Test file uploads with
+### Postman instead (POST {{MarkdownNoteTakingApp_HostAddress}}/api/attachments,
+### Body -> form-data, NoteId as Text, File as File).
+
+### Get attachments for a note
+GET {{MarkdownNoteTakingApp_HostAddress}}/api/attachments/note/{{noteId}}
+Authorization: Bearer {{token}}
+
+### Get attachments - note not found (expect 404)
+GET {{MarkdownNoteTakingApp_HostAddress}}/api/attachments/note/99999
+Authorization: Bearer {{token}}
+
+### Download attachment
+GET {{MarkdownNoteTakingApp_HostAddress}}/api/attachments/{{attachmentId}}
+Authorization: Bearer {{token}}
+
+### Download attachment - not found (expect 404)
+GET {{MarkdownNoteTakingApp_HostAddress}}/api/attachments/99999
+Authorization: Bearer {{token}}
+
+### Delete attachment (expect 204 No Content)
+DELETE {{MarkdownNoteTakingApp_HostAddress}}/api/attachments/{{attachmentId}}
+Authorization: Bearer {{token}}
+
+### Delete attachment - not found (expect 404)
+DELETE {{MarkdownNoteTakingApp_HostAddress}}/api/attachments/99999
+Authorization: Bearer {{token}}
 
 ###
